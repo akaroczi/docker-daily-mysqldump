@@ -1,0 +1,17 @@
+#!/bin/sh
+
+
+echo 'SCRIPT STARTED.'
+
+echo "host: $MYSQL_HOST"
+echo "prefix: $MYSQL_PREFIX"
+echo "user: $MYSQL_USER"
+echo "password: :-)"
+
+for DB in $(mysql -h ${MYSQL_HOST} -u${MYSQL_USER} -e "show databases like '${MYSQL_PREFIX}%'" -s --skip-column-names -p${MYSQL_PASSWORD} | awk -F " " '{print $1}'); do
+	echo -n "Actual DB: ${DB}..."
+	mysqldump -h ${MYSQL_HOST} -u ${MYSQL_USER} -p${MYSQL_PASSWORD} $DB > "/backups/$DB.sql";
+	echo " DONE."
+done
+
+echo 'SCRIPT FINISHED.'

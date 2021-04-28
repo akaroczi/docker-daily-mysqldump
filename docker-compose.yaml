@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+
+  periodic-backup:
+    build: .
+    image: akaroczi/daily-mysqldump
+    container_name: database-backup
+    environment:
+      MYSQL_HOST: mysql 
+      MYSQL_PASSWORD: pw
+      MYSQL_USER: user
+      MYSQL_PREFIX: WP_
+    networks:
+      - database_backend
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /mnt/data/mysqldumps:/backups
+    command: crond -f -d 8
+
+networks:
+  database_backend:
+    external: true
